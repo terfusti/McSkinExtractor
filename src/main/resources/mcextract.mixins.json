@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "terfusti.mcextract.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "SkinCustomizationScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
