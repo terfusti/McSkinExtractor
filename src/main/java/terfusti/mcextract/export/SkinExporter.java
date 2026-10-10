@@ -29,7 +29,7 @@ public final class SkinExporter {
         Path output = gameDirectory.resolve("skins");
         if (!Files.isRegularFile(input)) {
             LOGGER.error("Launcher skin data not found: {}", input);
-            return new ExportResult(0, 0, "Missing launcher_skins.json");
+            return new ExportResult(0, 0, "Missing launcher_skins.json", output);
         }
         int exported = 0;
         int failed = 0;
@@ -61,10 +61,10 @@ public final class SkinExporter {
             }
         } catch (Exception ex) {
             LOGGER.error("Unable to read or export launcher skin data from {}", input, ex);
-            return new ExportResult(exported, failed, ex.getMessage());
+            return new ExportResult(exported, failed, ex.getMessage(), output);
         }
         LOGGER.info("Export complete: {} saved, {} failed in {}", exported, failed, output);
-        return new ExportResult(exported, failed, null);
+        return new ExportResult(exported, failed, null, output);
     }
 
     private static void writeImage(JsonObject obj, String property, Path path) throws IOException {

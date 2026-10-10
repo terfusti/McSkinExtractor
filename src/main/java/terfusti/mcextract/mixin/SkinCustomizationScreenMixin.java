@@ -1,5 +1,6 @@
 package terfusti.mcextract.mixin;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.options.SkinCustomizationScreen;
@@ -8,6 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import terfusti.mcextract.export.ExportResult;
+import terfusti.mcextract.export.FolderOpener;
 import terfusti.mcextract.export.SkinExporter;
 
 import java.nio.file.Path;
@@ -30,14 +32,18 @@ public abstract class SkinCustomizationScreenMixin {
         Button exportButton = Button.builder(
                 Component.translatable("mcextract.export"),
                 clicked -> {
-                        Path gameDirectory = Path.of("")
-                                .toAbsolutePath()
-                                .normalize();
+                        Path gameDirectory = Minecraft.getInstance().gameDirectory.toPath();
 
                         ExportResult result =
                                 SkinExporter.exportFromGameDirectory(gameDirectory);
 
-                        clicked.setMessage(Component.literal(result.summary()));
+                        boolean opened = result.error() == null
+                                && result.outputDirectory() != null
+                                && FolderOpener.open(result.outputDirectory());
+
+                        clicked.setMessage(Component.literal(opened
+                                ? result.summary() + " - folder opened"
+                                : result.summary()));
                     }
         ).build();
 
